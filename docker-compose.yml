@@ -1,0 +1,21 @@
+services:
+  server:
+    build: .
+    container_name: med-tracker-server
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      # Option A: Bind mount (Recommended for easy access/backups of the DB on your host)
+      # This creates a 'data' folder in your project root containing the sqlite database file.
+      - ./data:/data
+      
+      # Option B: Named volume (Uncomment these and comment the line above if you prefer Docker-managed volumes)
+      # - med_tracker_data:/data
+
+    environment:
+      - DB_PATH=/data/med_tracker.db
+
+# Uncomment if using Option B (Named volume)
+# volumes:
+#   med_tracker_data:

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedTracker - Personal Daily Medication & Injection Log</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <span class="logo-icon">💊</span>
+                <h1>MedTracker</h1>
+            </div>
+            
+            <div class="date-controls">
+                <button id="prev-day-btn" class="icon-btn" title="Previous Day">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+                <div class="date-picker-wrapper">
+                    <input type="date" id="current-date-input">
+                    <span id="current-date-display">Today</span>
+                </div>
+                <button id="next-day-btn" class="icon-btn" title="Next Day">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+                <button id="today-btn" class="btn secondary">Today</button>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Layout -->
+        <main class="dashboard-grid">
+            
+            <!-- Left Side: Routine Checklist -->
+            <section class="card glass checklist-card">
+                <div class="card-header">
+                    <h2>Daily Checklist</h2>
+                    <span class="badge" id="checklist-completion-badge">0 / 3 Done</span>
+                </div>
+                
+                <div class="checklist-items">
+                    <!-- Morning Meds -->
+                    <div class="checklist-item" id="item-morning_meds">
+                        <div class="item-info">
+                            <div class="icon-wrapper morning">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/><circle cx="12" cy="12" r="4"/></svg>
+                            </div>
+                            <div class="item-text">
+                                <h3>Morning Meds</h3>
+                                <p class="status-text">Pending</p>
+                                <span class="time-taken"></span>
+                            </div>
+                        </div>
+                        <button class="toggle-btn" data-item="morning_meds">
+                            <span class="btn-check"></span>
+                            Mark Taken
+                        </button>
+                    </div>
+
+                    <!-- Evening Meds -->
+                    <div class="checklist-item" id="item-evening_meds">
+                        <div class="item-info">
+                            <div class="icon-wrapper evening">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                            </div>
+                            <div class="item-text">
+                                <h3>Evening Meds</h3>
+                                <p class="status-text">Pending</p>
+                                <span class="time-taken"></span>
+                            </div>
+                        </div>
+                        <button class="toggle-btn" data-item="evening_meds">
+                            <span class="btn-check"></span>
+                            Mark Taken
+                        </button>
+                    </div>
+
+                    <!-- Morning Inject -->
+                    <div class="checklist-item" id="item-morning_inject">
+                        <div class="item-info">
+                            <div class="icon-wrapper inject-morning">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 2 4 4M13 7l-9 9v4h4l9-9M9 11l4 4M5 19h14M14 4l6 6"/></svg>
+                            </div>
+                            <div class="item-text">
+                                <h3>Morning Inject</h3>
+                                <p class="status-text">Pending</p>
+                                <span class="time-taken"></span>
+                            </div>
+                        </div>
+                        <button class="toggle-btn" data-item="morning_inject">
+                            <span class="btn-check"></span>
+                            Mark Taken
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Side: Meal Injections Tracker -->
+            <section class="card glass meal-injections-card">
+                <div class="card-header">
+                    <h2>Mealtime Injections</h2>
+                    <span class="badge count-badge" id="meal-count-badge">0 Logged</span>
+                </div>
+                
+                <div class="log-actions">
+                    <p class="section-label">Quick Log Meal Injection:</p>
+                    <div class="quick-buttons">
+                        <button class="btn quick-log-btn" data-note="Breakfast">🍳 Breakfast</button>
+                        <button class="btn quick-log-btn" data-note="Lunch">🥪 Lunch</button>
+                        <button class="btn quick-log-btn" data-note="Dinner">🍽️ Dinner</button>
+                        <button class="btn quick-log-btn" data-note="Snack">🍪 Snack</button>
+                    </div>
+                    
+                    <div class="custom-log-form">
+                        <input type="text" id="custom-note-input" placeholder="Custom note (e.g. Afternoon Tea, Dessert)..." max="50">
+                        <button id="custom-log-btn" class="btn primary">Log Custom</button>
+                    </div>
+                </div>
+
+                <div class="logged-list-wrapper">
+                    <h3>Today's Logs</h3>
+                    <div id="meal-logs-list" class="logged-list">
+                        <!-- Dynamic items loaded here -->
+                        <div class="empty-state">No mealtime injections logged for this day.</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Bottom Area: Compliance History Log -->
+        <footer class="history-section card glass">
+            <div class="card-header">
+                <h2>7-Day Compliance History</h2>
+            </div>
+            <div class="history-grid" id="history-grid">
+                <!-- 7 days showing dates and visual states -->
+            </div>
+        </footer>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

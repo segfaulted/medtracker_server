@@ -1,0 +1,20 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# SQLite database files
+*.db
+*.db-journal
+*.db-wal
+data/
+
+# IDE configurations
+.vscode/
+.idea/
