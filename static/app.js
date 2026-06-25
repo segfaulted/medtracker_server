@@ -2,7 +2,7 @@
 
 // State Management
 let state = {
-    selectedDate: getLocalDateString(new Date()),
+    selectedDate: getCentralDateString(new Date()),
     checklist: {
         morning_meds: false,
         evening_meds: false,
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     prevDayBtn.addEventListener('click', () => adjustDate(-1));
     nextDayBtn.addEventListener('click', () => adjustDate(1));
     todayBtn.addEventListener('click', () => {
-        const todayStr = getLocalDateString(new Date());
+        const todayStr = getCentralDateString(new Date());
         if (state.selectedDate !== todayStr) {
             state.selectedDate = todayStr;
             dateInput.value = todayStr;
@@ -90,19 +90,38 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchHistory();
 });
 
-// Helper: Get local date string YYYY-MM-DD
-function getLocalDateString(date) {
-    const offset = date.getTimezoneOffset();
-    const localDate = new Date(date.getTime() - (offset * 60 * 1000));
-    return localDate.toISOString().split('T')[0];
+// Helper: Get US/Central date string YYYY-MM-DD
+function getCentralDateString(date) {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Chicago',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
+    const parts = formatter.formatToParts(date);
+    const year = parts.find(p => p.type === 'year').value;
+    const month = parts.find(p => p.type === 'month').value;
+    const day = parts.find(p => p.type === 'day').value;
+    return `${year}-${month}-${day}`;
+}
+
+// Helper: Adjust date string by offset (+1 or -1 days) in a timezone-agnostic way
+function adjustDateString(dateStr, offsetDays) {
+    const parts = dateStr.split('-').map(Number);
+    const date = new Date(parts[0], parts[1] - 1, parts[2]);
+    date.setDate(date.getDate() + offsetDays);
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
 }
 
 // Format date for display
 function formatDateDisplay(dateStr) {
-    const todayStr = getLocalDateString(new Date());
+    const todayStr = getCentralDateString(new Date());
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = getLocalDateString(yesterday);
+    const yesterdayStr = getCentralDateString(yesterday);
 
     if (dateStr === todayStr) return 'Today';
     if (dateStr === yesterdayStr) return 'Yesterday';
@@ -119,10 +138,7 @@ function updateDateDisplay() {
 
 // Adjust date by offset (+1 or -1)
 function adjustDate(offset) {
-    const current = new Date(state.selectedDate + 'T00:00:00');
-    current.setDate(current.getDate() + offset);
-    const newDateStr = getLocalDateString(current);
-    
+    const newDateStr = adjustDateString(state.selectedDate, offset);
     state.selectedDate = newDateStr;
     dateInput.value = newDateStr;
     updateDateDisplay();
@@ -305,8 +321,8 @@ async function fetchHistory() {
         const start = new Date();
         start.setDate(end.getDate() - 6); // Last 7 days
         
-        const startStr = getLocalDateString(start);
-        const endStr = getLocalDateString(end);
+        const startStr = getCentralDateString(start);
+        const endStr = getCentralDateString(end);
         
         const response = await fetch(`/api/history?start_date=${startStr}&end_date=${endStr}`);
         if (!response.ok) throw new Error('History fetch failed');
@@ -325,7 +341,7 @@ function renderHistory(historyData) {
     // Sort chronological ascending (oldest first)
     historyData.sort((a, b) => a.date.localeCompare(b.date));
     
-    const todayStr = getLocalDateString(new Date());
+    const todayStr = getCentralDateString(new Date());
     
     historyData.forEach(day => {
         const dayDiv = document.createElement('div');
@@ -373,12 +389,18 @@ function renderHistory(historyData) {
 
 // Utilities
 
-// Format datetime string to local time (hh:mm AM/PM)
+// Format datetime string to US/Central time (hh:mm AM/PM)
 function formatTime(isoStr) {
     if (!isoStr) return '';
     try {
-        const date = new Date(isoStr);
+        // If the string doesn't indicate a timezone offset or UTC, assume it is UTC
+        let parsedStr = isoStr;
+        if (!isoStr.endsWith('Z') && !isoStr.match(/[+-]\d{2}:\d{2}$/)) {
+            parsedStr = isoStr + 'Z';
+        }
+        const date = new Date(parsedStr);
         return date.toLocaleTimeString(undefined, {
+            timeZone: 'America/Chicago',
             hour: '2-digit',
             minute: '2-digit',
             hour12: true

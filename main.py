@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional, List
 from fastapi import FastAPI, Depends, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -72,7 +72,7 @@ def toggle_checklist_item(payload: ChecklistToggleRequest, session: Session = De
         session.add(checklist)
     
     item = payload.item
-    current_time_iso = datetime.now().isoformat()
+    current_time_iso = datetime.now(timezone.utc).isoformat()
     
     if item == "morning_meds":
         checklist.morning_meds = not checklist.morning_meds
@@ -97,7 +97,7 @@ def toggle_checklist_item(payload: ChecklistToggleRequest, session: Session = De
 @app.post("/api/meal-injections", response_model=MealInjectionLog)
 def add_meal_injection(payload: MealInjectionRequest, session: Session = Depends(get_session)):
     """Log a new mealtime injection with an optional note."""
-    current_time_iso = datetime.now().isoformat()
+    current_time_iso = datetime.now(timezone.utc).isoformat()
     log_entry = MealInjectionLog(
         date=payload.date,
         timestamp=current_time_iso,

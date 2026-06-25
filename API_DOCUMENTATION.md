@@ -27,23 +27,23 @@ Retrieves the checklist completion status and a list of all logged mealtime inje
     "checklist": {
       "date": "2026-06-23",
       "morning_meds": true,
-      "morning_meds_taken_at": "2026-06-23T10:07:45.123456",
+      "morning_meds_taken_at": "2026-06-23T15:07:45.123456+00:00",
       "evening_meds": false,
       "evening_meds_taken_at": null,
       "morning_inject": true,
-      "morning_inject_taken_at": "2026-06-23T08:12:02.987654"
+      "morning_inject_taken_at": "2026-06-23T13:12:02.987654+00:00"
     },
     "meal_injections": [
       {
         "id": 1,
         "date": "2026-06-23",
-        "timestamp": "2026-06-23T08:30:00.000000",
+        "timestamp": "2026-06-23T13:30:00.000000+00:00",
         "note": "Breakfast"
       },
       {
         "id": 2,
         "date": "2026-06-23",
-        "timestamp": "2026-06-23T12:15:30.000000",
+        "timestamp": "2026-06-23T17:15:30.000000+00:00",
         "note": "Lunch"
       }
     ]
@@ -53,7 +53,7 @@ Retrieves the checklist completion status and a list of all logged mealtime inje
 ---
 
 ### 2. Toggle Checklist Item
-Toggles the checked state (`true`/`false`) of a checklist item. If toggled to `true`, the `_taken_at` timestamp is set to the current server local time. If toggled to `false`, the timestamp is reset to `null`.
+Toggles the checked state (`true`/`false`) of a checklist item. If toggled to `true`, the `_taken_at` timestamp is set to the current server UTC time. If toggled to `false`, the timestamp is reset to `null`.
 
 * **Method**: `POST`
 * **Path**: `/api/checklist/toggle`
@@ -70,7 +70,7 @@ Toggles the checked state (`true`/`false`) of a checklist item. If toggled to `t
   {
     "date": "2026-06-23",
     "morning_meds": true,
-    "morning_meds_taken_at": "2026-06-23T15:08:05.876543",
+    "morning_meds_taken_at": "2026-06-23T20:08:05.876543+00:00",
     "evening_meds": false,
     "evening_meds_taken_at": null,
     "morning_inject": false,
@@ -104,7 +104,7 @@ Logs a new mealtime injection with the current timestamp and an optional note.
   {
     "id": 3,
     "date": "2026-06-23",
-    "timestamp": "2026-06-23T15:08:05.123456",
+    "timestamp": "2026-06-23T20:08:05.123456+00:00",
     "note": "Snack"
   }
   ```
@@ -147,24 +147,24 @@ Retrieves checklist status and aggregated counts of meal injections for a date r
       "date": "2026-06-22",
       "checklist": {
         "morning_meds": true,
-        "morning_meds_taken_at": "2026-06-22T08:05:00",
+        "morning_meds_taken_at": "2026-06-22T13:05:00+00:00",
         "evening_meds": true,
-        "evening_meds_taken_at": "2026-06-22T20:10:00",
+        "evening_meds_taken_at": "2026-06-23T01:10:00+00:00",
         "morning_inject": true,
-        "morning_inject_taken_at": "2026-06-22T08:06:00"
+        "morning_inject_taken_at": "2026-06-22T13:06:00+00:00"
       },
       "meal_injections_count": 3,
       "meal_injections": [
-        { "id": 10, "timestamp": "2026-06-22T08:15:00", "note": "Breakfast" },
-        { "id": 11, "timestamp": "2026-06-22T13:00:00", "note": "Lunch" },
-        { "id": 12, "timestamp": "2026-06-22T18:45:00", "note": "Dinner" }
+        { "id": 10, "timestamp": "2026-06-22T13:15:00+00:00", "note": "Breakfast" },
+        { "id": 11, "timestamp": "2026-06-22T18:00:00+00:00", "note": "Lunch" },
+        { "id": 12, "timestamp": "2026-06-22T23:45:00+00:00", "note": "Dinner" }
       ]
     },
     {
       "date": "2026-06-23",
       "checklist": {
         "morning_meds": true,
-        "morning_meds_taken_at": "2026-06-23T08:12:00",
+        "morning_meds_taken_at": "2026-06-23T13:12:00+00:00",
         "evening_meds": false,
         "evening_meds_taken_at": null,
         "morning_inject": false,
@@ -172,7 +172,7 @@ Retrieves checklist status and aggregated counts of meal injections for a date r
       },
       "meal_injections_count": 1,
       "meal_injections": [
-        { "id": 13, "timestamp": "2026-06-23T08:20:00", "note": "Breakfast" }
+        { "id": 13, "timestamp": "2026-06-23T13:20:00+00:00", "note": "Breakfast" }
       ]
     }
   ]
